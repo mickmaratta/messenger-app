@@ -21,8 +21,8 @@ const Message = ({ owner }) => {
         <span
           className={
             owner
-              ? "bg-slate-300 px-2 py-1 rounded-xl rounded-tl-sm max-w-md text-xs sm:text-sm md:text-base"
-              : "bg-blue-600 text-slate-200 px-2 py-1 rounded-xl rounded-tr-sm max-w-md text-xs sm:text-sm md:text-base"
+              ? "bg-slate-300 px-2 py-1 rounded-3xl rounded-tl-sm max-w-md text-xs sm:text-sm md:text-base ml-3"
+              : "bg-blue-600 text-slate-200 px-2 py-1 rounded-3xl rounded-tr-sm max-w-md text-xs sm:text-sm md:text-base mr-3"
           }
         >
           So cool eh? And what if I wrote something that very long and it had to
