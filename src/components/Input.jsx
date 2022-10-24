@@ -1,5 +1,11 @@
-import { PaperClipIcon, PhotoIcon } from "@heroicons/react/24/solid";
-import { arrayUnion, doc, serverTimestamp, Timestamp, updateDoc } from "firebase/firestore";
+import { PaperClipIcon, PhotoIcon, XMarkIcon } from "@heroicons/react/24/solid";
+import {
+  arrayUnion,
+  doc,
+  serverTimestamp,
+  Timestamp,
+  updateDoc,
+} from "firebase/firestore";
 import React, { useContext, useState } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { ChatContext } from "../context/ChatContext";
@@ -17,18 +23,14 @@ const Input = () => {
   const handleKey = (e) => {
     e.code === "Enter" && handleSend();
   };
-  
+
   const handleSend = async () => {
     if (img) {
       const storageRef = ref(storage, uuid());
-      const uploadTask = uploadBytesResumable(storageRef, img);
 
-      uploadTask.on(
-        (error) => {
-          //TODO:Handle Error
-        },
-        () => {
-          getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
+      await uploadBytesResumable(storageRef, img).then(() => {
+        getDownloadURL(storageRef).then(async (downloadURL) => {
+          try {
             await updateDoc(doc(db, "chats", data.chatId), {
               messages: arrayUnion({
                 id: uuid(),
@@ -38,9 +40,11 @@ const Input = () => {
                 img: downloadURL,
               }),
             });
-          });
-        }
-      );
+          } catch (error) {
+            console.log(error);
+          }
+        });
+      });
     } else {
       await updateDoc(doc(db, "chats", data.chatId), {
         messages: arrayUnion({
@@ -53,17 +57,17 @@ const Input = () => {
     }
 
     await updateDoc(doc(db, "userChats", currentUser.uid), {
-      [data.chatId + ".lastMessage"]:{
-        text
+      [data.chatId + ".lastMessage"]: {
+        text,
       },
-      [data.chatId+".date"]: serverTimestamp()
-    })
+      [data.chatId + ".date"]: serverTimestamp(),
+    });
     await updateDoc(doc(db, "userChats", data.user.uid), {
-      [data.chatId + ".lastMessage"]:{
-        text
+      [data.chatId + ".lastMessage"]: {
+        text,
       },
-      [data.chatId+".date"]: serverTimestamp()
-    })
+      [data.chatId + ".date"]: serverTimestamp(),
+    });
     setImg(null);
     setText("");
   };
@@ -79,18 +83,29 @@ const Input = () => {
         onKeyDown={handleKey}
       />
       <div className="flex space-x-2 items-center">
-        <PaperClipIcon className="h-4 w-4 md:h-6 md:w-6 text-blue-800" />
         <input
           type="file"
           style={{ display: "none" }}
           id="file"
           onChange={(e) => setImg(e.target.files[0])}
         />
-        <label htmlFor="file">
-          <PhotoIcon className="cursor-pointer h-4 w-4 md:h-6 md:w-6 text-blue-800" />
+        {img && (
+          <XMarkIcon
+            className="text-red-800 h-8 w-8 cursor-pointer"
+            onClick={() => setImg(null)}
+          />
+        )}
+        <label className="flex space-x-2 items-center" htmlFor="file">
+          {!img && (
+            <PhotoIcon className="cursor-pointer h-4 w-4 md:h-6 md:w-6 text-blue-800" />
+          )}
+          {img && (
+            <span className="text-xs text-blue-500 italic">{img.name}</span>
+          )}
         </label>
         <button
           onClick={handleSend}
+          disabled={!text && !img && true}
           className="text-xs sm:text-sm md:text-base bg-blue-800 px-3 py-1 rounded-lg text-white hover:bg-blue-700 transition-all duration-300"
         >
           Send

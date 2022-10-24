@@ -19,9 +19,14 @@ const Messages = () => {
   }, [data.chatId]);
   return (
     <div className="bg-slate-100 flex-1 overflow-auto">
-      {messages.map((message) => (
-        <Message message={message} key={message.id} />
-      ))}
+      {messages.map((message, i) => {
+        if (i + 1 === messages.length) {
+         return <Message message={message} key={message.id} lastMessage={true} />;
+        } else {
+
+          return <Message message={message} key={message.id} lastMessage={false} />;
+        }
+      })}
     </div>
   );
 };

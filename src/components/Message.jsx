@@ -4,7 +4,7 @@ import { ChatContext } from "../context/ChatContext";
 import { format } from "timeago.js";
 import { Timestamp } from "firebase/firestore";
 
-const Message = ({ message }) => {
+const Message = ({ message, lastMessage }) => {
   const { currentUser } = useContext(AuthContext);
   const { data } = useContext(ChatContext);
 
@@ -39,19 +39,23 @@ const Message = ({ message }) => {
             : "flex flex-col items-end max-w-prose space-y-1"
         }
       >
-        <span
-          className={
-            message.senderId !== currentUser.uid
-              ? "bg-slate-300 px-2 py-1 rounded-3xl rounded-tl-sm max-w-md text-xs sm:text-sm md:text-base ml-3"
-              : "bg-blue-600 text-slate-200 px-2 py-1 rounded-3xl rounded-tr-sm max-w-md text-xs sm:text-sm md:text-base mr-3"
-          }
-        >
-          {message.text}
-        </span>
-        {message.img && <img className="max-w-xs" src={message.img} alt="" />}
-        <span className="text-slate-400 text-xs italic ">
-          {format(message.date.toDate())}
-        </span>
+        {message.text !== "" && (
+          <span
+            className={
+              message.senderId !== currentUser.uid
+                ? "bg-slate-300 px-2 py-1 rounded-3xl rounded-tl-sm max-w-md text-xs sm:text-sm md:text-base ml-3"
+                : "bg-blue-600 text-slate-200 px-2 py-1 rounded-3xl rounded-tr-sm max-w-md text-xs sm:text-sm md:text-base mr-3"
+            }
+          >
+            {message.text}
+          </span>
+        )}
+        {message.img && <img className="w-1/3" src={message.img} alt="" />}
+        {lastMessage && (
+          <span className="text-slate-400 text-xs italic ">
+            {format(message.date.toDate())}
+          </span>
+        )}
       </div>
     </div>
   );
