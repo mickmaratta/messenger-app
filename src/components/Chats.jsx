@@ -28,7 +28,7 @@ const Chats = () => {
 
   return (
     <div>
-      {Object.entries(chats).map((chat) => (
+      {Object.entries(chats)?.sort((a,b) => b[1].date - a[1].date).map((chat) => (
         <div
           onClick={() => handleSelect(chat[1].userInfo)}
           key={chat[0]}
@@ -43,8 +43,8 @@ const Chats = () => {
             <span className="text-white font-bold text-xs sm:text-sm md:text-base">
               {chat[1].userInfo.displayName}
             </span>
-            <span className="text-white font-bold text-xs">
-              {chat[1].userInfo.lastMessage?.text}
+            <span className="text-white italic text-xs">
+              {chat[1].lastMessage?.text}
             </span>
           </div>
         </div>

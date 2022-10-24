@@ -1,34 +1,47 @@
-import React from "react";
+import React, { useContext, useEffect, useRef } from "react";
+import { AuthContext } from "../context/AuthContext";
+import { ChatContext } from "../context/ChatContext";
 
-const Message = ({ owner }) => {
+const Message = ({ message }) => {
+  const { currentUser } = useContext(AuthContext);
+  const { data } = useContext(ChatContext);
+
+  const ref = useRef();
+
+  useEffect(() => {
+    ref.current?.scrollIntoView({behavior:"smooth"})
+  }, [message])
+  
   return (
     <div
+      ref={ref}
       className={
-        owner
+        message.senderId !== currentUser.uid
           ? "flex px-3 py-2 items-center"
           : "flex flex-row-reverse px-3 py-2 items-center"
       }
     >
       <div className="hidden md:inline flex flex-col items-center justify-center">
-        <img
-          className="w-6 h-6 rounded-full"
-          src="https://thumbs.dreamstime.com/b/vector-illustration-avatar-dummy-logo-collection-image-icon-stock-isolated-object-set-symbol-web-137160339.jpg"
-          alt=""
-        />
+        {message.senderId !== currentUser.uid && (
+          <img
+            className="w-6 h-6 rounded-full"
+            src="https://thumbs.dreamstime.com/b/vector-illustration-avatar-dummy-logo-collection-image-icon-stock-isolated-object-set-symbol-web-137160339.jpg"
+            alt=""
+          />
+        )}
         <span className="text-slate-400 text-xs italic ">Just now</span>
       </div>
       <div className="flex flex-col max-w-prose space-y-2">
         <span
           className={
-            owner
+            message.senderId !== currentUser.uid
               ? "bg-slate-300 px-2 py-1 rounded-3xl rounded-tl-sm max-w-md text-xs sm:text-sm md:text-base ml-3"
               : "bg-blue-600 text-slate-200 px-2 py-1 rounded-3xl rounded-tr-sm max-w-md text-xs sm:text-sm md:text-base mr-3"
           }
         >
-          So cool eh? And what if I wrote something that very long and it had to
-          go to another line and keep going and going and going and goinggggg
+          {message.text}
         </span>
-        {/* <img className="" src="https://picsum.photos/id/237/536/354" alt="" /> */}
+        {message.img && <img className="max-w-xs" src={message.img} alt="" />}
       </div>
     </div>
   );
