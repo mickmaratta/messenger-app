@@ -41,13 +41,14 @@ const Search = () => {
   };
 
   const handleSelect = async () => {
-    //Check whether this chat exists, if not create new one
+    //check whether the group(chats in firestore) exists, if not create
     const combinedId =
       currentUser.uid > user.uid
         ? currentUser.uid + user.uid
         : user.uid + currentUser.uid;
     try {
       const res = await getDoc(doc(db, "chats", combinedId));
+
       if (!res.exists()) {
         //create a chat in chats collection
         await setDoc(doc(db, "chats", combinedId), { messages: [] });
@@ -57,24 +58,24 @@ const Search = () => {
           [combinedId + ".userInfo"]: {
             uid: user.uid,
             displayName: user.displayName,
-            photUrl: user.photURL,
+            photoURL: user.photoURL,
           },
           [combinedId + ".date"]: serverTimestamp(),
         });
+
         await updateDoc(doc(db, "userChats", user.uid), {
           [combinedId + ".userInfo"]: {
             uid: currentUser.uid,
             displayName: currentUser.displayName,
-            photUrl: currentUser.photURL,
+            photoURL: currentUser.photoURL,
           },
           [combinedId + ".date"]: serverTimestamp(),
         });
       }
-    } catch (error) {
-      console.log(err);
-    }
+    } catch (err) {}
 
-    //create user chats
+    setUser(null);
+    setUsername("");
   };
 
   return (
@@ -86,6 +87,7 @@ const Search = () => {
           placeholder="Find a user..."
           onKeyDown={handleKey}
           onChange={(e) => setUsername(e.target.value)}
+          value={username}
         />
         {username && (
           <span className="text-slate-400 italic text-xs absolute top-2 right-2">
