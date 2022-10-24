@@ -14,6 +14,10 @@ const Input = () => {
   const { currentUser } = useContext(AuthContext);
   const { data } = useContext(ChatContext);
 
+  const handleKey = (e) => {
+    e.code === "Enter" && handleSend();
+  };
+  
   const handleSend = async () => {
     if (img) {
       const storageRef = ref(storage, uuid());
@@ -72,6 +76,7 @@ const Input = () => {
         type="text"
         placeholder="Type something..."
         value={text}
+        onKeyDown={handleKey}
       />
       <div className="flex space-x-2 items-center">
         <PaperClipIcon className="h-4 w-4 md:h-6 md:w-6 text-blue-800" />

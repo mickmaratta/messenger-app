@@ -1,6 +1,8 @@
 import React, { useContext, useEffect, useRef } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { ChatContext } from "../context/ChatContext";
+import { format } from "timeago.js";
+import { Timestamp } from "firebase/firestore";
 
 const Message = ({ message }) => {
   const { currentUser } = useContext(AuthContext);
@@ -9,9 +11,9 @@ const Message = ({ message }) => {
   const ref = useRef();
 
   useEffect(() => {
-    ref.current?.scrollIntoView({behavior:"smooth"})
-  }, [message])
-  
+    ref.current?.scrollIntoView({ behavior: "smooth" });
+  }, [message]);
+
   return (
     <div
       ref={ref}
@@ -29,9 +31,14 @@ const Message = ({ message }) => {
             alt=""
           />
         )}
-        <span className="text-slate-400 text-xs italic ">Just now</span>
       </div>
-      <div className="flex flex-col max-w-prose space-y-2">
+      <div
+        className={
+          message.senderId !== currentUser.uid
+            ? "flex flex-col items-start max-w-prose space-y-1"
+            : "flex flex-col items-end max-w-prose space-y-1"
+        }
+      >
         <span
           className={
             message.senderId !== currentUser.uid
@@ -42,6 +49,9 @@ const Message = ({ message }) => {
           {message.text}
         </span>
         {message.img && <img className="max-w-xs" src={message.img} alt="" />}
+        <span className="text-slate-400 text-xs italic ">
+          {format(message.date.toDate())}
+        </span>
       </div>
     </div>
   );
