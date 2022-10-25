@@ -2,7 +2,6 @@ import React, { useContext, useEffect, useRef } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { ChatContext } from "../context/ChatContext";
 import { format } from "timeago.js";
-import { Timestamp } from "firebase/firestore";
 
 const Message = ({ message, lastMessage }) => {
   const { currentUser } = useContext(AuthContext);
