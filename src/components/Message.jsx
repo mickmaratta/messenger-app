@@ -49,11 +49,6 @@ const Message = ({ message, lastMessage }) => {
           </span>
         )}
         {message.img && <img className="w-1/3" src={message.img} alt="" />}
-        {lastMessage && (
-          <span className="text-slate-400 text-xs italic ">
-            {message.date.toDate()}
-          </span>
-        )}
       </div>
     </div>
   );
