@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useRef } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { ChatContext } from "../context/ChatContext";
-import { format } from "timeago.js";
 
 const Message = ({ message, lastMessage }) => {
   const { currentUser } = useContext(AuthContext);
@@ -52,7 +51,7 @@ const Message = ({ message, lastMessage }) => {
         {message.img && <img className="w-1/3" src={message.img} alt="" />}
         {lastMessage && (
           <span className="text-slate-400 text-xs italic ">
-            {format(message.date.toDate())}
+            {message.date.toDate()}
           </span>
         )}
       </div>
