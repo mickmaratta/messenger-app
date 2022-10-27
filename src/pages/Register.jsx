@@ -10,7 +10,7 @@ const Register = () => {
   const [errorMessage, setErrorMessage] = useState();
   const [err, setErr] = useState();
   const [file, setFile] = useState(null);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -21,8 +21,7 @@ const Register = () => {
 
     try {
       //Create user
-      const res = await createUserWithEmailAndPassword(auth, email, password)
-      
+      const res = await createUserWithEmailAndPassword(auth, email, password);
 
       //Create a unique image name
       const date = new Date().getTime();
@@ -31,18 +30,35 @@ const Register = () => {
       await uploadBytesResumable(storageRef, file).then(() => {
         getDownloadURL(storageRef).then(async (downloadURL) => {
           try {
-            //Update profile
-            await updateProfile(res.user, {
-              displayName,
-              photoURL: downloadURL,
-            });
-            //create user on firestore
-            await setDoc(doc(db, "users", res.user.uid), {
-              uid: res.user.uid,
-              displayName,
-              email,
-              photoURL: downloadURL,
-            });
+            if (file) {
+              //Update profile
+              await updateProfile(res.user, {
+                displayName,
+                photoURL: downloadURL,
+              });
+
+              //create user on firestore
+              await setDoc(doc(db, "users", res.user.uid), {
+                uid: res.user.uid,
+                displayName,
+                email,
+                photoURL: downloadURL,
+              });
+            } else {
+              //Update profile
+              await updateProfile(res.user, {
+                displayName,
+                photoURL: null,
+              });
+              //create user on firestore
+              await setDoc(doc(db, "users", res.user.uid), {
+                uid: res.user.uid,
+                displayName,
+                email,
+                photoURL: null,
+              });
+            }
+
             await setDoc(doc(db, "userChats", res.user.uid), {});
             navigate("/");
           } catch (err) {
@@ -54,7 +70,7 @@ const Register = () => {
     } catch (error) {
       const errorCode = error.code;
       const errorMessage = error.message;
-      setErr(true)
+      setErr(true);
       setErrorMessage(errorMessage.split(":")[1]);
     }
   };
@@ -83,10 +99,20 @@ const Register = () => {
             type="password"
             placeholder="Password"
           />
-          <input className="hidden" type="file" id="file" onChange={e=>setFile(e.target.files[0])}/>
-          <label htmlFor="file" className="flex items-center space-x-2 cursor-pointer">
+          <input
+            className="hidden"
+            type="file"
+            id="file"
+            onChange={(e) => setFile(e.target.files[0])}
+          />
+          <label
+            htmlFor="file"
+            className="flex items-center space-x-2 cursor-pointer"
+          >
             {!file && <img className="cursor-pointer w-8" src={Add} alt="" />}
-            {file && <span className="text-xs text-blue-500 italic">{file.name}</span>}
+            {file && (
+              <span className="text-xs text-blue-500 italic">{file.name}</span>
+            )}
             <span className="text-sm text-gray-600">Add an avatar</span>
           </label>
           <button className="bg-blue-700 hover:bg-blue-600 transition-all duration-300 text-white p-3 border-none rounded-lg shadow-2xl cursor-pointer">
@@ -95,10 +121,14 @@ const Register = () => {
         </form>
         {err && (
           <span className="text-red-600 text-sm italic text-center">
-            {errorMessage ? errorMessage : "Oops something went wrong! Try again."}
+            {errorMessage
+              ? errorMessage
+              : "Oops something went wrong! Try again."}
           </span>
         )}
-        <Link to="/login"><p className="text-sm text-gray-600 pt-1">Have an account? Login</p></Link>
+        <Link to="/login">
+          <p className="text-sm text-gray-600 pt-1">Have an account? Login</p>
+        </Link>
       </div>
     </div>
   );

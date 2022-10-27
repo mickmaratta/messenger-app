@@ -100,7 +100,7 @@ const Search = () => {
           onClick={handleSelect}
           className="flex items-center space-x-2 p-2 border-solid border-b-2 border-gray-500 cursor-pointer hover:bg-slate-800 transition-all"
         >
-          <img className="w-8 h-8 rounded-full" src={user.photoURL} alt="" />
+          <img className="w-8 h-8 rounded-full" src={user.photoURL ? user.photoURL : "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460__480.png"} alt="" />
           <span className="text-white font-bold text-xs sm:text-sm md:text-base">
             {user.displayName}
           </span>

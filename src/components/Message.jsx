@@ -25,7 +25,7 @@ const Message = ({ message, lastMessage }) => {
         {message.senderId !== currentUser.uid && (
           <img
             className="w-6 h-6 rounded-full"
-            src="https://thumbs.dreamstime.com/b/vector-illustration-avatar-dummy-logo-collection-image-icon-stock-isolated-object-set-symbol-web-137160339.jpg"
+            src={data.user.photoURL ? data.user.photoURL : "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460__480.png"}
             alt=""
           />
         )}

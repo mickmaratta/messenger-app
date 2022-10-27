@@ -39,7 +39,7 @@ const ChatsMobile = () => {
         >
           <img
             className="w-8 h-8 rounded-full"
-            src={chat[1].userInfo.photoURL}
+            src={chat[1].userInfo.photoURL ? chat[1].userInfo.photoURL : "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460__480.png"}
             alt=""
           />
           <div className="flex flex-col space-y-1">
